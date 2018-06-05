@@ -17,6 +17,7 @@ import com.squareup.picasso.Picasso;
 
 /**
  * Created by Gino Osahon on 14/03/2017.
+ * Edited by Nathan Wang 6/4/2018.
  */
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder> {
 
@@ -64,7 +65,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
     @Override
     public void onBindViewHolder(MovieViewHolder holder, final int position) {
         String image_url = IMAGE_URL_BASE_PATH + movies.get(position).getPosterPath();
-        Picasso.with(context)
+        Picasso.get()
                 .load(image_url)
                 .placeholder(android.R.drawable.sym_def_app_icon)
                 .error(android.R.drawable.sym_def_app_icon)
