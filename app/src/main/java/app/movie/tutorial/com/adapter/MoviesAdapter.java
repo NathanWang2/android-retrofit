@@ -24,7 +24,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
     private List<Movie> movies;
     private int rowLayout;
     private Context context;
-    public static final String IMAGE_URL_BASE_PATH="http://image.tmdb.org/t/p/w342//";
+    public static final String IMAGE_URL_BASE_PATH="http://image.tmdb.org/t/p/w185//";
 
     public MoviesAdapter(List<Movie> movies, int rowLayout, Context context) {
         this.movies = movies;
