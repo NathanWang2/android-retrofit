@@ -57,7 +57,8 @@ public class MainActivity extends AppCompatActivity{
 
         MovieApiService movieApiService = retrofit.create(MovieApiService.class);
 
-        Call<MovieResponse> call = movieApiService.getTopRatedMovies(API_KEY);
+//      Change the method movieApiService.WhateverMovieAPIService(key)
+        Call<MovieResponse> call = movieApiService.getPoplarMovies(API_KEY);
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
