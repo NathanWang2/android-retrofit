@@ -12,7 +12,8 @@ import android.widget.TextView;
 import java.util.List;
 
 import app.movie.tutorial.com.R;
-import app.movie.tutorial.com.model.Movie;
+import app.movie.tutorial.com.model.MovieAPIModel;
+
 import com.squareup.picasso.Picasso;
 
 /**
@@ -21,12 +22,12 @@ import com.squareup.picasso.Picasso;
  */
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder> {
 
-    private List<Movie> movies;
+    private List<MovieAPIModel> movies;
     private int rowLayout;
     private Context context;
     public static final String IMAGE_URL_BASE_PATH="http://image.tmdb.org/t/p/w185//";
 
-    public MoviesAdapter(List<Movie> movies, int rowLayout, Context context) {
+    public MoviesAdapter(List<MovieAPIModel> movies, int rowLayout, Context context) {
         this.movies = movies;
         this.rowLayout = rowLayout;
         this.context = context;
