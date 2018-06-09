@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by Gino Osahon on 13/03/2017.
  */
-public class Movie {
+public class MovieAPIModel {
 
     @SerializedName("poster_path")
     private String posterPath;
