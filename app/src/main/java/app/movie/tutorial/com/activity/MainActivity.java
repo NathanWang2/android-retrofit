@@ -1,12 +1,12 @@
 package app.movie.tutorial.com.activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -91,6 +91,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
     @Override
     public void onItemClick(MovieAPIModel item) {
-        Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(MainActivity.this, MovieDetailActivity.class);
+        intent.putExtra("MoviePoster", item.getPosterPath());
+        intent.putExtra("MovieTitle", item.getTitle());
+        intent.putExtra("MovieDetails", item.getOverview());
+        intent.putExtra("MovieRating", String.valueOf(item.getVoteAverage()));
+        intent.putExtra("MovieReleaseDate", item.getReleaseDate());
+        startActivity(intent);
     }
 }
