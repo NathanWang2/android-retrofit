@@ -7,6 +7,9 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -33,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     private RecyclerView recyclerView;
 
     // insert your themoviedb.org API KEY here
-    private final static String API_KEY = "";
+    private final static String API_KEY = "e5d9e7a3d1a18c5caa632a613d622aae";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +51,33 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
         connectAndGetApiData();
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.sort_order, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_dropdown1:
+                Toast.makeText(this, "Dropdown 1", Toast.LENGTH_SHORT).show();
+                return true;
+
+            case R.id.action_dropdown_2:
+                Toast.makeText(this, "Dropdown 2", Toast.LENGTH_SHORT).show();
+                return true;
+
+            case R.id.action_dropdown_3:
+                Toast.makeText(this, "Dropdown 3", Toast.LENGTH_SHORT).show();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     // This method create an instance of Retrofit
