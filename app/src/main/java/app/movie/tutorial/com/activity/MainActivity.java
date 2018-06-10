@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     private RecyclerView recyclerView;
 
     // insert your themoviedb.org API KEY here
-    private final static String API_KEY = "e5d9e7a3d1a18c5caa632a613d622aae";
+    private final static String API_KEY = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +45,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
-
-//        recyclerView.setHasFixedSize(true);
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        connectAndGetApiData();
+        connectAndGetApiData(1);
 
     }
 
@@ -64,15 +60,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         int id = item.getItemId();
         switch (id) {
             case R.id.action_dropdown_1:
-                Toast.makeText(this, "Dropdown 1", Toast.LENGTH_SHORT).show();
+                connectAndGetApiData(1);
                 return true;
 
             case R.id.action_dropdown_2:
-                Toast.makeText(this, "Dropdown 2", Toast.LENGTH_SHORT).show();
-                return true;
-
-            case R.id.action_dropdown_3:
-                Toast.makeText(this, "Dropdown 3", Toast.LENGTH_SHORT).show();
+                connectAndGetApiData(2);
                 return true;
 
             default:
@@ -82,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
     // This method create an instance of Retrofit
     // set the base url
-    public void connectAndGetApiData(){
+    public void connectAndGetApiData(int sort){
 
         final AutoFitGridLayoutManager layoutManager = new AutoFitGridLayoutManager(MainActivity.this, 500);
         recyclerView.setLayoutManager(layoutManager);
@@ -96,8 +88,20 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
         MovieApiService movieApiService = retrofit.create(MovieApiService.class);
 
-//      Change the method movieApiService.WhateverMovieAPIService(key)
-        Call<MovieModel> call = movieApiService.getPoplarMovies(API_KEY);
+//        Chooses the sorting method
+        Call<MovieModel> call;
+        int SortMethod = sort;
+        switch (SortMethod){
+            case 1:
+                call = movieApiService.getPoplarMovies(API_KEY);
+                break;
+            case 2:
+                call = movieApiService.getTopRatedMovies(API_KEY);
+                break;
+            default:
+                call = movieApiService.getPoplarMovies(API_KEY);
+
+        }
         call.enqueue(new Callback<MovieModel>() {
             @Override
             public void onResponse(Call<MovieModel> call, Response<MovieModel> response) {
