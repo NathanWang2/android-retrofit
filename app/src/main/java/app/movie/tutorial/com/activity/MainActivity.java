@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.action_dropdown1:
+            case R.id.action_dropdown_1:
                 Toast.makeText(this, "Dropdown 1", Toast.LENGTH_SHORT).show();
                 return true;
 

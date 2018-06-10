@@ -8,7 +8,7 @@
         >
         <menu>
             <item
-                android:id="@+id/action_dropdown1"
+                android:id="@+id/action_dropdown_1"
                 android:title="@string/dropdown_1" />
             <item
                 android:id="@+id/action_dropdown_2"
