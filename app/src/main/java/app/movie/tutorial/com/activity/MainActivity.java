@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     public static final String BASE_URL = "http://api.themoviedb.org/3/";
     private static Retrofit retrofit = null;
     private RecyclerView recyclerView;
+    public int CurrentPage = 1;
+    public List<MovieAPIModel> movies;
 
     // insert your themoviedb.org API KEY here
     private final static String API_KEY = "";
@@ -45,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
-        connectAndGetApiData(1);
+        connectAndGetApiData(1, 1);
 
     }
 
@@ -60,11 +62,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         int id = item.getItemId();
         switch (id) {
             case R.id.action_dropdown_1:
-                connectAndGetApiData(1);
+                connectAndGetApiData(1, CurrentPage);
                 return true;
 
             case R.id.action_dropdown_2:
-                connectAndGetApiData(2);
+                connectAndGetApiData(2, CurrentPage);
                 return true;
 
             default:
@@ -74,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
     // This method create an instance of Retrofit
     // set the base url
-    public void connectAndGetApiData(int sort){
+    public void connectAndGetApiData(int sort, final int page){
 
         final AutoFitGridLayoutManager layoutManager = new AutoFitGridLayoutManager(MainActivity.this, 500);
         recyclerView.setLayoutManager(layoutManager);
@@ -93,27 +95,31 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         int SortMethod = sort;
         switch (SortMethod){
             case 1:
-                call = movieApiService.getPoplarMovies(API_KEY);
+                call = movieApiService.getPoplarMovies(API_KEY, page);
                 break;
             case 2:
-                call = movieApiService.getTopRatedMovies(API_KEY);
+                call = movieApiService.getTopRatedMovies(API_KEY, page);
                 break;
             default:
-                call = movieApiService.getPoplarMovies(API_KEY);
+                call = movieApiService.getPoplarMovies(API_KEY, page);
 
         }
         call.enqueue(new Callback<MovieModel>() {
             @Override
             public void onResponse(Call<MovieModel> call, Response<MovieModel> response) {
-                List<MovieAPIModel> movies = response.body().getResults();
-
+                if (page == 1){
+//                    List<MovieAPIModel> movies = response.body().getResults();
+                    movies = response.body().getResults();
 //                recyclerView.setAdapter(new MoviesAdapter(movies, R.layout.list_item_movie, getApplicationContext()));
 
-                recyclerView.setAdapter(new RecyclerViewAdapter(getApplicationContext(), movies, MainActivity.this));
-                recyclerView.setLayoutManager(layoutManager);
-
+                    recyclerView.setAdapter(new RecyclerViewAdapter(getApplicationContext(), movies, MainActivity.this));
+                    recyclerView.setLayoutManager(layoutManager);
+                } else {
+                    List<MovieAPIModel> temp = response.body().getResults();
+                    movies.addAll(temp);
+                    recyclerView.getAdapter().notifyDataSetChanged();
+                }
                 Log.d(TAG, "Number of movies received: " + movies.size());
-
             }
 
             @Override
