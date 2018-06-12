@@ -13,10 +13,14 @@ import app.movie.tutorial.com.model.MovieModel;
 public interface MovieApiService {
 
     @GET("movie/top_rated")
-    Call<MovieModel> getTopRatedMovies(@Query("api_key") String apiKey);
+    Call<MovieModel> getTopRatedMovies(
+            @Query("api_key") String apiKey,
+            @Query("page") int page);
 
     @GET("movie/popular")
-    Call<MovieModel> getPoplarMovies(@Query("api_key") String apiKey);
+    Call<MovieModel> getPoplarMovies(
+            @Query("api_key") String apiKey,
+            @Query("page") int page);
 
     @GET("movie/{id}")
     Call<MovieModel> getMovieDetails(@Path("id") int id, @Query("api_key") String apiKey);
