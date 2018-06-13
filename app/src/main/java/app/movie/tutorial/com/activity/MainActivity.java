@@ -35,7 +35,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     private static Retrofit retrofit = null;
     private RecyclerView recyclerView;
     public int CurrentPage = 1;
+    public int SortMethod = 1;
     public List<MovieAPIModel> movies;
+    public final AutoFitGridLayoutManager layoutManager = new AutoFitGridLayoutManager(MainActivity.this, 500);
 
     // insert your themoviedb.org API KEY here
     private final static String API_KEY = "";
@@ -47,8 +49,39 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
-        connectAndGetApiData(1, 1);
 
+        connectAndGetApiData(SortMethod, CurrentPage);
+
+
+
+//        Load more
+        final int[] pastVisibleItems = new int[1];
+        final int[] visibleItemCount = new int[1];
+        final int[] totalItemCount = new int[1];
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
+        {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
+            {
+                if(dy > 0) //check for scroll down
+                {
+                    visibleItemCount[0] = layoutManager.getChildCount();
+                    totalItemCount[0] = layoutManager.getItemCount();
+                    pastVisibleItems[0] = layoutManager.findFirstVisibleItemPosition();
+
+                    if ( (visibleItemCount[0] + pastVisibleItems[0]) >= totalItemCount[0])
+                    {
+//                        Refreshes at the end of the list
+                        Log.v("...", "Last Item Wow !");
+                        //Do pagination.. i.e. fetch new data
+
+                        connectAndGetApiData(SortMethod, ++CurrentPage);
+                    }
+
+                }
+            }
+        });
     }
 
     @Override
@@ -62,11 +95,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         int id = item.getItemId();
         switch (id) {
             case R.id.action_dropdown_1:
-                connectAndGetApiData(1, CurrentPage);
+                SortMethod = 1;
+                connectAndGetApiData(SortMethod, 1);
                 return true;
 
             case R.id.action_dropdown_2:
-                connectAndGetApiData(2, CurrentPage);
+                SortMethod = 2;
+                connectAndGetApiData(SortMethod, 1);
                 return true;
 
             default:
@@ -77,10 +112,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     // This method create an instance of Retrofit
     // set the base url
     public void connectAndGetApiData(int sort, final int page){
-
-        final AutoFitGridLayoutManager layoutManager = new AutoFitGridLayoutManager(MainActivity.this, 500);
-        recyclerView.setLayoutManager(layoutManager);
-
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
