@@ -21,7 +21,4 @@ public interface MovieApiService {
     Call<MovieModel> getPoplarMovies(
             @Query("api_key") String apiKey,
             @Query("page") int page);
-
-    @GET("movie/{id}")
-    Call<MovieModel> getMovieDetails(@Path("id") int id, @Query("api_key") String apiKey);
 }
