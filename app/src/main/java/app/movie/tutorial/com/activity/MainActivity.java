@@ -3,18 +3,17 @@ package app.movie.tutorial.com.activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
+
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
+
 
 import java.util.List;
 
 import app.movie.tutorial.com.R;
-import app.movie.tutorial.com.adapter.MoviesAdapter;
+
 import app.movie.tutorial.com.adapter.RecyclerViewAdapter;
 import app.movie.tutorial.com.layoutManager.AutoFitGridLayoutManager;
 import app.movie.tutorial.com.model.MovieAPIModel;
@@ -25,6 +24,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+/**
+ * The repository is forked. You can also go to https://github.com/Ginowine/android-retrofit
+ * To find where the original project came from.
+ *
+ * Created by Gino Osahon on 14/03/2017.
+ * Edited by Nathan Wang 6/4/2018.
+ */
 
 
 
@@ -73,8 +80,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                     if ( (visibleItemCount[0] + pastVisibleItems[0]) >= totalItemCount[0])
                     {
 //                        Refreshes at the end of the list
-                        Log.v("...", "Last Item Wow !");
-                        //Do pagination.. i.e. fetch new data
+//                        Log.v("...", "Last Item Wow !");
+//                        //Do pagination.. i.e. fetch new data
 
                         connectAndGetApiData(SortMethod, ++CurrentPage);
                     }
@@ -139,9 +146,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             @Override
             public void onResponse(Call<MovieModel> call, Response<MovieModel> response) {
                 if (page == 1){
-//                    List<MovieAPIModel> movies = response.body().getResults();
                     movies = response.body().getResults();
-//                recyclerView.setAdapter(new MoviesAdapter(movies, R.layout.list_item_movie, getApplicationContext()));
 
                     recyclerView.setAdapter(new RecyclerViewAdapter(getApplicationContext(), movies, MainActivity.this));
                     recyclerView.setLayoutManager(layoutManager);
