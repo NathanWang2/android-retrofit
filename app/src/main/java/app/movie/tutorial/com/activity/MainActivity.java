@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     public int CurrentPage = 1;
     public int SortMethod = 1;
     public List<MovieAPIModel> movies;
-    public final AutoFitGridLayoutManager layoutManager = new AutoFitGridLayoutManager(MainActivity.this, 500);
+    public final AutoFitGridLayoutManager layoutManager = new AutoFitGridLayoutManager(MainActivity.this, 300);
 
     // insert your themoviedb.org API KEY here
     private final static String API_KEY = "";
