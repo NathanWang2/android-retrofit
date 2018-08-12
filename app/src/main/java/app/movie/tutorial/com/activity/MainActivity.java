@@ -8,7 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -18,12 +18,14 @@ import app.movie.tutorial.com.adapter.RecyclerViewAdapter;
 import app.movie.tutorial.com.layoutManager.AutoFitGridLayoutManager;
 import app.movie.tutorial.com.model.MovieAPIModel;
 import app.movie.tutorial.com.model.MovieModel;
+import app.movie.tutorial.com.model.TrailerModel;
 import app.movie.tutorial.com.rest.MovieApiService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
 
 /**
  * The repository is forked. You can also go to https://github.com/Ginowine/android-retrofit
@@ -39,15 +41,14 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
     private static final String TAG = MainActivity.class.getSimpleName();
     public static final String BASE_URL = "http://api.themoviedb.org/3/";
+    public final static String API_KEY = "";
     private static Retrofit retrofit = null;
     private RecyclerView recyclerView;
     public int CurrentPage = 1;
     public int SortMethod = 1;
     public List<MovieAPIModel> movies;
+    public List<TrailerModel> trailers;
     public final AutoFitGridLayoutManager layoutManager = new AutoFitGridLayoutManager(MainActivity.this, 300);
-
-    // insert your themoviedb.org API KEY here
-    private final static String API_KEY = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,15 +165,54 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             }
         });
     }
+    public String getTrailer(int id){
+
+        if (retrofit == null) {
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+        }
+
+        MovieApiService movieApiService = retrofit.create(MovieApiService.class);
+
+        Call<TrailerModel> Trailer = movieApiService.getTrailer(id, API_KEY);
+        Log.d("TRAILER", Trailer.request().url().toString());
+        Trailer.enqueue(new Callback<TrailerModel>() {
+            @Override
+            public void onResponse(Call<TrailerModel> call, Response<TrailerModel> response) {
+                Log.d("Call", call.toString());
+                Log.d("RESPONSE", response.toString());
+                trailers = response.body().getResults();
+                Log.d(TAG, "This is the trailer data " + trailers);
+                Toast.makeText(MainActivity.this, "This Passed", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<TrailerModel> call, Throwable throwable) {
+                Log.e(TAG, throwable.toString());
+                Toast.makeText(MainActivity.this, "THIS FAILED", Toast.LENGTH_SHORT).show();
+            }
+        });
+        if (trailers != null){
+            // Parse out the youtube video and return it
+        }
+        return null;
+    }
 
     @Override
     public void onItemClick(MovieAPIModel item) {
+        // Possible Solutions
+        // TODO add call to trailer with the current position
+        // TODO Add new item intent for trailer
         Intent intent = new Intent(MainActivity.this, MovieDetailActivity.class);
+        String test = getTrailer(item.getId());
         intent.putExtra("MoviePoster", item.getPosterPath());
         intent.putExtra("MovieTitle", item.getTitle());
         intent.putExtra("MovieDetails", item.getOverview());
         intent.putExtra("MovieRating", String.valueOf(item.getVoteAverage()));
         intent.putExtra("MovieReleaseDate", item.getReleaseDate());
+
         startActivity(intent);
     }
 }

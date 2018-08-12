@@ -1,5 +1,6 @@
 package app.movie.tutorial.com.rest;
 
+import app.movie.tutorial.com.model.TrailerModel;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -21,4 +22,11 @@ public interface MovieApiService {
     Call<MovieModel> getPoplarMovies(
             @Query("api_key") String apiKey,
             @Query("page") int page);
+
+    @GET("movie/{movieId}/videos")
+    Call<TrailerModel> getTrailer(
+            @Path(value = "movieId", encoded = true) int id,
+            @Query("api_key") String apiKey
+    );
+
 }

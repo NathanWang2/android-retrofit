@@ -10,12 +10,14 @@ import com.squareup.picasso.Picasso;
 
 import app.movie.tutorial.com.R;
 
+
 public class MovieDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_info);
+
 
         ImageView mPoster = (ImageView) findViewById(R.id.PosterTV);
         TextView mTitle = (TextView) findViewById(R.id.MovieTitleTV);
@@ -47,7 +49,5 @@ public class MovieDetailActivity extends AppCompatActivity {
         if (intent.hasExtra("MovieRating")){
             mMovieRating.setText(intent.getStringExtra("MovieRating"));
         }
-
-
     }
 }
