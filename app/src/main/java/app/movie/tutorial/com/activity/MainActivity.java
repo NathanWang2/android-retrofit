@@ -19,6 +19,7 @@ import app.movie.tutorial.com.layoutManager.AutoFitGridLayoutManager;
 import app.movie.tutorial.com.model.MovieAPIModel;
 import app.movie.tutorial.com.model.MovieModel;
 import app.movie.tutorial.com.model.TrailerModel;
+import app.movie.tutorial.com.model.TrailerResponse;
 import app.movie.tutorial.com.rest.MovieApiService;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     public int SortMethod = 1;
     public List<MovieAPIModel> movies;
     public List<TrailerModel> trailers;
+    public List<TrailerResponse> trailerResponse;
     public final AutoFitGridLayoutManager layoutManager = new AutoFitGridLayoutManager(MainActivity.this, 300);
 
     @Override
@@ -183,8 +185,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             public void onResponse(Call<TrailerModel> call, Response<TrailerModel> response) {
                 Log.d("Call", call.toString());
                 Log.d("RESPONSE", response.toString());
-                trailers = response.body().getResults();
-                Log.d(TAG, "This is the trailer data " + trailers);
+                trailerResponse = response.body().getResults();
+                Log.d(TAG, "This is the trailer data " + trailerResponse);
                 Toast.makeText(MainActivity.this, "This Passed", Toast.LENGTH_SHORT).show();
             }
 

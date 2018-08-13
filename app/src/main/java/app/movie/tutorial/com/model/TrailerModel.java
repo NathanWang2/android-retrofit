@@ -5,21 +5,27 @@ import com.google.gson.annotations.SerializedName;
 
 public class TrailerModel {
     @SerializedName("id")
-    private int id_trailer;
+    private int movieId;
     @SerializedName("results")
-    private List<TrailerModel> results;
+    private List<TrailerResponse> results;
+
+    TrailerModel (int id, List<TrailerResponse> response){
+        this.movieId = id;
+        this.results = response;
+    }
 
     public int getIdTrailer(){
-        return id_trailer;
+        return movieId;
     }
 
     public void setIdTrailer(int id_trailer){
-        this.id_trailer=id_trailer;
+        this.movieId=id_trailer;
     }
 
-    public List<TrailerModel> getResults(){
+    public List<TrailerResponse> getResults(){
         return results;
     }
+
     public void setResults(){
         this.results = results;
     }
