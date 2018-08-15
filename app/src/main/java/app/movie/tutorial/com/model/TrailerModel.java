@@ -1,5 +1,6 @@
 package app.movie.tutorial.com.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
@@ -7,9 +8,9 @@ public class TrailerModel {
     @SerializedName("id")
     private int movieId;
     @SerializedName("results")
-    private List<TrailerResponse> results;
+    private List<ListOfTrailers> results;
 
-    TrailerModel (int id, List<TrailerResponse> response){
+    TrailerModel (int id, List<ListOfTrailers> response){
         this.movieId = id;
         this.results = response;
     }
@@ -22,7 +23,7 @@ public class TrailerModel {
         this.movieId=id_trailer;
     }
 
-    public List<TrailerResponse> getResults(){
+    public List<ListOfTrailers> getResults(){
         return results;
     }
 

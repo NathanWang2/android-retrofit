@@ -1,6 +1,7 @@
 package app.movie.tutorial.com.activity;
 
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -10,8 +11,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
+
+import app.movie.tutorial.com.Key;
 import app.movie.tutorial.com.R;
 
 import app.movie.tutorial.com.adapter.RecyclerViewAdapter;
@@ -19,7 +23,7 @@ import app.movie.tutorial.com.layoutManager.AutoFitGridLayoutManager;
 import app.movie.tutorial.com.model.MovieAPIModel;
 import app.movie.tutorial.com.model.MovieModel;
 import app.movie.tutorial.com.model.TrailerModel;
-import app.movie.tutorial.com.model.TrailerResponse;
+import app.movie.tutorial.com.model.ListOfTrailers;
 import app.movie.tutorial.com.rest.MovieApiService;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,14 +46,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
     private static final String TAG = MainActivity.class.getSimpleName();
     public static final String BASE_URL = "http://api.themoviedb.org/3/";
-    public final static String API_KEY = "";
+    public final static String API_KEY = Key.API_KEY;
     private static Retrofit retrofit = null;
     private RecyclerView recyclerView;
     public int CurrentPage = 1;
     public int SortMethod = 1;
     public List<MovieAPIModel> movies;
-    public List<TrailerModel> trailers;
-    public List<TrailerResponse> trailerResponse;
+    public List<ListOfTrailers> listOfTrailers;
     public final AutoFitGridLayoutManager layoutManager = new AutoFitGridLayoutManager(MainActivity.this, 300);
 
     @Override
@@ -167,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             }
         });
     }
-    public String getTrailer(int id){
+    public void getTrailer(int id){
 
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
@@ -178,28 +181,32 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
         MovieApiService movieApiService = retrofit.create(MovieApiService.class);
 
-        Call<TrailerModel> Trailer = movieApiService.getTrailer(id, API_KEY);
-        Log.d("TRAILER", Trailer.request().url().toString());
-        Trailer.enqueue(new Callback<TrailerModel>() {
+        Call<TrailerModel> call = movieApiService.getTrailer(id, API_KEY);
+        Log.d("TRAILER", call.request().url().toString());
+        call.enqueue(new Callback<TrailerModel>() {
             @Override
             public void onResponse(Call<TrailerModel> call, Response<TrailerModel> response) {
                 Log.d("Call", call.toString());
                 Log.d("RESPONSE", response.toString());
-                trailerResponse = response.body().getResults();
-                Log.d(TAG, "This is the trailer data " + trailerResponse);
+                listOfTrailers = response.body().getResults();
+                Toast.makeText(MainActivity.this, "test", Toast.LENGTH_SHORT).show();
+//                TODO Put values in variables to pass as intents
+                Log.d(TAG, "This is the trailer data " + listOfTrailers);
                 Toast.makeText(MainActivity.this, "This Passed", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onFailure(Call<TrailerModel> call, Throwable throwable) {
                 Log.e(TAG, throwable.toString());
-                Toast.makeText(MainActivity.this, "THIS FAILED", Toast.LENGTH_SHORT).show();
+                String failureText = "This call has failed!";
+                Toast.makeText(MainActivity.this, failureText, Toast.LENGTH_SHORT).show();
             }
         });
-        if (trailers != null){
-            // Parse out the youtube video and return it
-        }
-        return null;
+
+//        if (trailers != null){
+//            // Parse out the youtube video and return it
+//        }
+//        return null;
     }
 
     @Override
@@ -208,12 +215,14 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         // TODO add call to trailer with the current position
         // TODO Add new item intent for trailer
         Intent intent = new Intent(MainActivity.this, MovieDetailActivity.class);
-        String test = getTrailer(item.getId());
+        getTrailer(item.getId());
         intent.putExtra("MoviePoster", item.getPosterPath());
         intent.putExtra("MovieTitle", item.getTitle());
         intent.putExtra("MovieDetails", item.getOverview());
         intent.putExtra("MovieRating", String.valueOf(item.getVoteAverage()));
         intent.putExtra("MovieReleaseDate", item.getReleaseDate());
+//        intent.putExtra("Trailer", listOfTrailers.toArray());
+
 
         startActivity(intent);
     }

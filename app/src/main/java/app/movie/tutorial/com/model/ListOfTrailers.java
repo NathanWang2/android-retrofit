@@ -2,10 +2,10 @@ package app.movie.tutorial.com.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class TrailerResponse {
+public class ListOfTrailers {
 
     @SerializedName("id")
-    private int movieId;
+    private String movieId;
 
     @SerializedName("key")
     private String youtubeKey;
@@ -13,13 +13,17 @@ public class TrailerResponse {
     @SerializedName("site")
     private String site;
 
-    TrailerResponse(int movieId, String key, String site){
+    @SerializedName("name")
+    private String name;
+
+    ListOfTrailers(String movieId, String key, String site){
         this.movieId = movieId;
         this.youtubeKey = key;
         this.site = site;
     }
 
-    public int getMovieId (){ return movieId; }
+    public String getMovieId (){ return movieId; }
     public String getYoutubeKey () { return youtubeKey; }
-    public String site () { return site; }
+    public String getSite () { return site; }
+    public String getName () { return  name; }
 }

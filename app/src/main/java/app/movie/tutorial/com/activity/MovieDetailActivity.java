@@ -3,12 +3,22 @@ package app.movie.tutorial.com.activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 
+import java.util.Arrays;
+import java.util.List;
+
 import app.movie.tutorial.com.R;
+import app.movie.tutorial.com.adapter.TrailerViewAdapter;
+import app.movie.tutorial.com.model.ListOfTrailers;
 
 
 public class MovieDetailActivity extends AppCompatActivity {
@@ -24,6 +34,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         TextView mMovieDesc = (TextView) findViewById(R.id.MovieDescTV);
         TextView mMovieRating = (TextView) findViewById(R.id.rating);
         TextView mMovieReleaseDate = (TextView) findViewById(R.id.MovieReleaseDateTV);
+        RecyclerView mTrailerView = (RecyclerView) findViewById(R.id.trailerRecyclerView);
 
         Intent intent = getIntent();
 
@@ -48,6 +59,17 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
         if (intent.hasExtra("MovieRating")){
             mMovieRating.setText(intent.getStringExtra("MovieRating"));
+        }
+        if (intent.hasExtra("TrailerResponse")){
+            LinearLayoutManager trailerLayoutManager = new LinearLayoutManager(this);
+            trailerLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            mTrailerView.setLayoutManager(trailerLayoutManager);
+
+
+            List<ListOfTrailers> array = (List<ListOfTrailers>) new Gson().fromJson(intent.getStringArrayExtra("TrailerResponse").toString(), ListOfTrailers.class);
+
+            TrailerViewAdapter adapter = new TrailerViewAdapter(this, array);
+            mTrailerView.setAdapter(adapter);
         }
     }
 }
