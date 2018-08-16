@@ -19,7 +19,7 @@ public class TrailerViewAdapter extends RecyclerView.Adapter<TrailerViewAdapter.
     private List<ListOfTrailers> trailers;
     private Context mContext;
 
-    public TrailerViewAdapter(Context context, List response){
+    public TrailerViewAdapter(Context context, List<ListOfTrailers> response){
         mContext = context;
         trailers = response;
     }
@@ -55,8 +55,8 @@ public class TrailerViewAdapter extends RecyclerView.Adapter<TrailerViewAdapter.
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?v=" + trailers.get(position).getYoutubeKey()));
-                holder.itemView.getContext().startActivity(intent);
-
+//                holder.itemView.getContext().startActivity(intent);
+                mContext.startActivity(intent);
             }
         });
     }

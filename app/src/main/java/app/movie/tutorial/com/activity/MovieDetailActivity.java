@@ -1,40 +1,53 @@
 package app.movie.tutorial.com.activity;
 
 import android.content.Intent;
+import android.graphics.Movie;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 
-import java.util.Arrays;
 import java.util.List;
 
 import app.movie.tutorial.com.R;
 import app.movie.tutorial.com.adapter.TrailerViewAdapter;
 import app.movie.tutorial.com.model.ListOfTrailers;
+import app.movie.tutorial.com.model.TrailerModel;
+import app.movie.tutorial.com.rest.MovieApiService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+import static app.movie.tutorial.com.activity.MainActivity.API_KEY;
+import static app.movie.tutorial.com.activity.MainActivity.BASE_URL;
 
 
 public class MovieDetailActivity extends AppCompatActivity {
+
+    private static Retrofit retrofit = null;
+    private List<ListOfTrailers> listOfTrailers;
+    public TrailerViewAdapter trailerViewAdapter;
+    public RecyclerView mTrailerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_info);
 
-
         ImageView mPoster = (ImageView) findViewById(R.id.PosterTV);
         TextView mTitle = (TextView) findViewById(R.id.MovieTitleTV);
         TextView mMovieDesc = (TextView) findViewById(R.id.MovieDescTV);
         TextView mMovieRating = (TextView) findViewById(R.id.rating);
         TextView mMovieReleaseDate = (TextView) findViewById(R.id.MovieReleaseDateTV);
-        RecyclerView mTrailerView = (RecyclerView) findViewById(R.id.trailerRecyclerView);
+        mTrailerView = (RecyclerView) findViewById(R.id.trailerRecyclerView);
 
         Intent intent = getIntent();
 
@@ -60,16 +73,56 @@ public class MovieDetailActivity extends AppCompatActivity {
         if (intent.hasExtra("MovieRating")){
             mMovieRating.setText(intent.getStringExtra("MovieRating"));
         }
-        if (intent.hasExtra("TrailerResponse")){
-            LinearLayoutManager trailerLayoutManager = new LinearLayoutManager(this);
-            trailerLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-            mTrailerView.setLayoutManager(trailerLayoutManager);
-
-
-            List<ListOfTrailers> array = (List<ListOfTrailers>) new Gson().fromJson(intent.getStringArrayExtra("TrailerResponse").toString(), ListOfTrailers.class);
-
-            TrailerViewAdapter adapter = new TrailerViewAdapter(this, array);
-            mTrailerView.setAdapter(adapter);
+        if (intent.hasExtra("MovieId")){
+            getTrailer(intent.getIntExtra("MovieId", 0));
         }
+
+//        if (intent.hasExtra("TrailerResponse")){
+//            LinearLayoutManager trailerLayoutManager = new LinearLayoutManager(this);
+//            trailerLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+//            mTrailerView.setLayoutManager(trailerLayoutManager);
+//
+//            ListOfTrailers test = new Gson().fromJson(getIntent().getStringExtra("TrailerResponse"), ListOfTrailers.class);
+//            Log.d("LIST OF TRAILERS", test.toString());
+//
+////            TrailerViewAdapter adapter = new TrailerViewAdapter(this, array);
+////            mTrailerView.setAdapter(adapter);
+//        }
+    }
+
+    public void getTrailer(int id){
+
+        if (retrofit == null) {
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+        }
+
+        MovieApiService movieApiService = retrofit.create(MovieApiService.class);
+
+        Call<TrailerModel> call = movieApiService.getTrailer(id, API_KEY);
+        Log.d("TRAILER", call.request().url().toString());
+        call.enqueue(new Callback<TrailerModel>() {
+            @Override
+            public void onResponse(Call<TrailerModel> call, Response<TrailerModel> response) {
+                listOfTrailers = response.body().getResults();
+                Toast.makeText(MovieDetailActivity.this, "This Passed", Toast.LENGTH_SHORT).show();
+
+                TrailerViewAdapter adapter = new TrailerViewAdapter(MovieDetailActivity.this, listOfTrailers);
+                mTrailerView.setAdapter(adapter);
+
+                LinearLayoutManager trailerLayoutManager = new LinearLayoutManager(MovieDetailActivity.this);
+                trailerLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                mTrailerView.setLayoutManager(trailerLayoutManager);
+            }
+
+            @Override
+            public void onFailure(Call<TrailerModel> call, Throwable throwable) {
+                Log.e("FAILURE API CALL", throwable.toString());
+                String failureText = "This call has failed!";
+                Toast.makeText(MovieDetailActivity.this, failureText, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
