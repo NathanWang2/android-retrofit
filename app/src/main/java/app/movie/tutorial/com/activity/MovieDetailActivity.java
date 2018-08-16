@@ -1,7 +1,6 @@
 package app.movie.tutorial.com.activity;
 
 import android.content.Intent;
-import android.graphics.Movie;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -34,7 +33,6 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private static Retrofit retrofit = null;
     private List<ListOfTrailers> listOfTrailers;
-    public TrailerViewAdapter trailerViewAdapter;
     public RecyclerView mTrailerView;
 
     @Override
@@ -76,20 +74,9 @@ public class MovieDetailActivity extends AppCompatActivity {
         if (intent.hasExtra("MovieId")){
             getTrailer(intent.getIntExtra("MovieId", 0));
         }
-
-//        if (intent.hasExtra("TrailerResponse")){
-//            LinearLayoutManager trailerLayoutManager = new LinearLayoutManager(this);
-//            trailerLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-//            mTrailerView.setLayoutManager(trailerLayoutManager);
-//
-//            ListOfTrailers test = new Gson().fromJson(getIntent().getStringExtra("TrailerResponse"), ListOfTrailers.class);
-//            Log.d("LIST OF TRAILERS", test.toString());
-//
-////            TrailerViewAdapter adapter = new TrailerViewAdapter(this, array);
-////            mTrailerView.setAdapter(adapter);
-//        }
     }
 
+    // Makes the Asnyc call and creates/sets recyclerview and adapter
     public void getTrailer(int id){
 
         if (retrofit == null) {
@@ -115,6 +102,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                 LinearLayoutManager trailerLayoutManager = new LinearLayoutManager(MovieDetailActivity.this);
                 trailerLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
                 mTrailerView.setLayoutManager(trailerLayoutManager);
+                Log.d("NUMBER OF TRAILERS", String.valueOf(adapter.getItemCount()));
             }
 
             @Override

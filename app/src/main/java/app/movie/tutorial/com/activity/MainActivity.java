@@ -168,9 +168,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
     @Override
     public void onItemClick(MovieAPIModel item) {
-        // Possible Solutions
-        // TODO add call to trailer with the current position
-        // TODO Add new item intent for trailer
         Intent intent = new Intent(MainActivity.this, MovieDetailActivity.class);
         intent.putExtra("MoviePoster", item.getPosterPath());
         intent.putExtra("MovieTitle", item.getTitle());
