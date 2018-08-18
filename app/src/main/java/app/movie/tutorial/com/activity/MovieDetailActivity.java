@@ -12,11 +12,14 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import app.movie.tutorial.com.R;
+import app.movie.tutorial.com.adapter.ReviewViewAdapter;
 import app.movie.tutorial.com.adapter.TrailerViewAdapter;
 import app.movie.tutorial.com.model.ListOfTrailers;
+import app.movie.tutorial.com.model.ReviewsModel;
 import app.movie.tutorial.com.model.TrailerModel;
 import app.movie.tutorial.com.rest.MovieApiService;
 import retrofit2.Call;
@@ -34,6 +37,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     private static Retrofit retrofit = null;
     private List<ListOfTrailers> listOfTrailers;
     public RecyclerView mTrailerView;
+    private ArrayList<ReviewsModel.ReviewList> reviewsModel;
+    public RecyclerView mReviewView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +51,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         TextView mMovieRating = (TextView) findViewById(R.id.rating);
         TextView mMovieReleaseDate = (TextView) findViewById(R.id.MovieReleaseDateTV);
         mTrailerView = (RecyclerView) findViewById(R.id.trailerRecyclerView);
+        mReviewView = (RecyclerView) findViewById(R.id.reviewRecyclerView);
 
         Intent intent = getIntent();
 
@@ -72,7 +78,9 @@ public class MovieDetailActivity extends AppCompatActivity {
             mMovieRating.setText(intent.getStringExtra("MovieRating"));
         }
         if (intent.hasExtra("MovieId")){
-            getTrailer(intent.getIntExtra("MovieId", 0));
+            int movieId = intent.getIntExtra("MovieId", 0);
+            getTrailer(movieId);
+            getReviews(movieId);
         }
     }
 
@@ -110,6 +118,38 @@ public class MovieDetailActivity extends AppCompatActivity {
                 Log.e("FAILURE API CALL", throwable.toString());
                 String failureText = "This call has failed!";
                 Toast.makeText(MovieDetailActivity.this, failureText, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void getReviews(int id){
+        if (retrofit == null) {
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+        }
+
+        MovieApiService movieApiService = retrofit.create(MovieApiService.class);
+        Call<ReviewsModel> call = movieApiService.getReviews(id, API_KEY);
+        call.enqueue(new Callback<ReviewsModel>() {
+            @Override
+            public void onResponse(Call<ReviewsModel> call, Response<ReviewsModel> response) {
+                reviewsModel = response.body().getResults();
+                
+                ReviewViewAdapter adapter = new ReviewViewAdapter(MovieDetailActivity.this, reviewsModel);
+                mReviewView.setAdapter(adapter);
+
+                LinearLayoutManager recyclerLayoutManager = new LinearLayoutManager(MovieDetailActivity.this);
+                recyclerLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                mReviewView.setLayoutManager(recyclerLayoutManager);
+
+
+            }
+
+            @Override
+            public void onFailure(Call<ReviewsModel> call, Throwable t) {
+                Log.e("FAILURE API CALL", t.toString());
             }
         });
     }

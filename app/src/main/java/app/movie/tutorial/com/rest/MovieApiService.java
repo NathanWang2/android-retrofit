@@ -1,5 +1,6 @@
 package app.movie.tutorial.com.rest;
 
+import app.movie.tutorial.com.model.ReviewsModel;
 import app.movie.tutorial.com.model.TrailerModel;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -27,6 +28,13 @@ public interface MovieApiService {
     Call<TrailerModel> getTrailer(
             @Path(value = "movieId", encoded = true) int id,
             @Query("api_key") String apiKey
+    );
+
+    @GET("movie/{movieId}/reviews")
+    Call<ReviewsModel> getReviews(
+        @Path(value = "movieId", encoded = true) int id,
+        @Query("api_key") String apiKey
+//        TODO Add page query
     );
 
 }
