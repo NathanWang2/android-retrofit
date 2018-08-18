@@ -4,4 +4,5 @@
     <string name="dropdown_1">Most Popular</string>
     <string name="dropdown_2">Top Rated</string>
     <string name="trailers">Trailers</string>
+    <string name="reviews">Reviews</string>
 </resources>

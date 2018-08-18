@@ -136,7 +136,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ReviewsModel> call, Response<ReviewsModel> response) {
                 reviewsModel = response.body().getResults();
-                
+
                 ReviewViewAdapter adapter = new ReviewViewAdapter(MovieDetailActivity.this, reviewsModel);
                 mReviewView.setAdapter(adapter);
 
