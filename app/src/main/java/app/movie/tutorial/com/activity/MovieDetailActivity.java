@@ -1,6 +1,7 @@
 package app.movie.tutorial.com.activity;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,6 +19,7 @@ import java.util.List;
 import app.movie.tutorial.com.R;
 import app.movie.tutorial.com.adapter.ReviewViewAdapter;
 import app.movie.tutorial.com.adapter.TrailerViewAdapter;
+import app.movie.tutorial.com.data.FavoritesDbHelper;
 import app.movie.tutorial.com.model.ListOfTrailers;
 import app.movie.tutorial.com.model.ReviewsModel;
 import app.movie.tutorial.com.model.TrailerModel;
@@ -39,6 +41,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     public RecyclerView mTrailerView;
     private ArrayList<ReviewsModel.ReviewList> reviewsModel;
     public RecyclerView mReviewView;
+    private SQLiteDatabase mDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +55,9 @@ public class MovieDetailActivity extends AppCompatActivity {
         TextView mMovieReleaseDate = (TextView) findViewById(R.id.MovieReleaseDateTV);
         mTrailerView = (RecyclerView) findViewById(R.id.trailerRecyclerView);
         mReviewView = (RecyclerView) findViewById(R.id.reviewRecyclerView);
+
+        FavoritesDbHelper dbHelper = new FavoritesDbHelper(this);
+        mDb = dbHelper.getWritableDatabase();
 
         Intent intent = getIntent();
 

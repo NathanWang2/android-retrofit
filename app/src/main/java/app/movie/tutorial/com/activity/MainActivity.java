@@ -1,6 +1,8 @@
 package app.movie.tutorial.com.activity;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -9,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -16,6 +19,9 @@ import app.movie.tutorial.com.Key;
 import app.movie.tutorial.com.R;
 
 import app.movie.tutorial.com.adapter.RecyclerViewAdapter;
+import app.movie.tutorial.com.data.CursorToMovieModel;
+import app.movie.tutorial.com.data.FavoritesContract;
+import app.movie.tutorial.com.data.FavoritesDbHelper;
 import app.movie.tutorial.com.layoutManager.AutoFitGridLayoutManager;
 import app.movie.tutorial.com.model.MovieAPIModel;
 import app.movie.tutorial.com.model.MovieModel;
@@ -46,8 +52,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     private RecyclerView recyclerView;
     public int CurrentPage = 1;
     public int SortMethod = 1;
-    public List<MovieAPIModel> movies;
+    public ArrayList<MovieAPIModel> movies;
     public final AutoFitGridLayoutManager layoutManager = new AutoFitGridLayoutManager(MainActivity.this, 300);
+    private SQLiteDatabase mDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +62,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         setContentView(R.layout.activity_main);
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+
+        FavoritesDbHelper dbHelper = new FavoritesDbHelper(this);
+        mDb = dbHelper.getReadableDatabase();
+
+//        Testing to see if I have the db or not
+        Cursor test = getAllMovies();
 
 
         connectAndGetApiData(SortMethod, CurrentPage);
@@ -111,6 +124,22 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                 connectAndGetApiData(SortMethod, 1);
                 return true;
 
+            case R.id.action_dropdown_3:
+                SortMethod = 3;
+                String count = "SELECT count(*) FROM " + FavoritesContract.FavoritesEntry.TABLE_NAME;
+                Cursor test = mDb.rawQuery(count, null);
+                if (test.getCount() > 0){
+                    Log.d("FAVORITES", "We are in the favorites3");
+                    Cursor cursor = getAllMovies();
+                    CursorToMovieModel listOfMovies = new CursorToMovieModel(cursor);
+                }
+                Log.d("NOT IN FAVORITES", "Not in favorites");
+
+//                TODO Pass over the database read
+//                TODO make utils class for iterating through cursor to make
+//                addScreenItem();
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -163,6 +192,23 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                 Log.e(TAG, throwable.toString());
             }
         });
+    }
+
+    public void addScreenItem(ArrayList<MovieAPIModel> listMovies){
+//        recyclerView.setAdapter(new RecyclerViewAdapter(getApplicationContext(), listMovies, MainActivity.this));
+//        recyclerView.setLayoutManager(layoutManager);
+    }
+
+    private Cursor getAllMovies(){
+        return mDb.query(
+                FavoritesContract.FavoritesEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
     }
 
 

@@ -1,5 +1,6 @@
 package app.movie.tutorial.com.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
@@ -13,7 +14,7 @@ public class MovieModel {
     @SerializedName("page")
     private int page;
     @SerializedName("results")
-    private List<MovieAPIModel> results;
+    private ArrayList<MovieAPIModel> results;
     @SerializedName("total_results")
     private int totalResults;
     @SerializedName("total_pages")
@@ -27,11 +28,11 @@ public class MovieModel {
         this.page = page;
     }
 
-    public List<MovieAPIModel> getResults() {
+    public ArrayList<MovieAPIModel> getResults() {
         return results;
     }
 
-    public void setResults(List<MovieAPIModel> results) {
+    public void setResults(ArrayList<MovieAPIModel> results) {
         this.results = results;
     }
 

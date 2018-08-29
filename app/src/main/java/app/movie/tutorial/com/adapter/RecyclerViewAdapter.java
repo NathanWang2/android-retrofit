@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import app.movie.tutorial.com.R;
@@ -18,12 +19,12 @@ import app.movie.tutorial.com.model.MovieAPIModel;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
 
-    private List<MovieAPIModel> movies;
+    private ArrayList<MovieAPIModel> movies;
     private Context mContext;
-    protected ItemListener mListener;
-    public static final String IMAGE_URL_BASE_PATH="http://image.tmdb.org/t/p/w185//";
+    private ItemListener mListener;
+    private static final String IMAGE_URL_BASE_PATH="http://image.tmdb.org/t/p/w185//";
 
-    public RecyclerViewAdapter(Context context, List values, ItemListener itemListener) {
+    public RecyclerViewAdapter(Context context, ArrayList values, ItemListener itemListener) {
 
         movies = values;
         mContext = context;
