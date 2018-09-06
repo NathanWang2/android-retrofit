@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,12 +64,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
-        FavoritesDbHelper dbHelper = new FavoritesDbHelper(this);
-        mDb = dbHelper.getReadableDatabase();
-
-//        Testing to see if I have the db or not
-        Cursor test = getAllMovies();
-
 
         connectAndGetApiData(SortMethod, CurrentPage);
 
@@ -104,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         });
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.sort_order, menu);
@@ -126,18 +122,25 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
             case R.id.action_dropdown_3:
                 SortMethod = 3;
-                String count = "SELECT count(*) FROM " + FavoritesContract.FavoritesEntry.TABLE_NAME;
-                Cursor test = mDb.rawQuery(count, null);
-                if (test.getCount() > 0){
-                    Log.d("FAVORITES", "We are in the favorites3");
-                    Cursor cursor = getAllMovies();
-                    CursorToMovieModel listOfMovies = new CursorToMovieModel(cursor);
-                }
-                Log.d("NOT IN FAVORITES", "Not in favorites");
+                FavoritesDbHelper dbHelper = new FavoritesDbHelper(this);
+                mDb = dbHelper.getReadableDatabase();
 
+                Cursor cursor = mDb.rawQuery("select DISTINCT tbl_name from sqlite_master where tbl_name = '"+ FavoritesContract.FavoritesEntry.TABLE_NAME+"'", null);
+                if(cursor!=null) {
+                    if (cursor.getCount() > 0) {
+                        cursor.close();
+                        Log.d("FAVORITES", "We are in the favorites");
+                        Cursor test = getAllMovies();
+                        CursorToMovieModel listOfMovies = new CursorToMovieModel(test);
+                        addScreenItem(listOfMovies.getListOfMovies());
+                        Toast.makeText(this, "THIS TABLE HAS CONTENT", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "THIS TABLE IS EMPTY", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                cursor.close();
 //                TODO Pass over the database read
 //                TODO make utils class for iterating through cursor to make
-//                addScreenItem();
                 return true;
 
             default:
@@ -195,8 +198,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     }
 
     public void addScreenItem(ArrayList<MovieAPIModel> listMovies){
-//        recyclerView.setAdapter(new RecyclerViewAdapter(getApplicationContext(), listMovies, MainActivity.this));
-//        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(new RecyclerViewAdapter(getApplicationContext(), listMovies, MainActivity.this));
+        recyclerView.setLayoutManager(layoutManager);
     }
 
     private Cursor getAllMovies(){

@@ -22,13 +22,11 @@ public class CursorToMovieModel {
     public ArrayList<MovieAPIModel> getListOfMovies(){
 
         ArrayList<MovieAPIModel> result = new ArrayList<MovieAPIModel>();
-        MovieAPIModel temp = new MovieAPIModel();
+//        MovieAPIModel temp = new MovieAPIModel();
         for (int i = 0; i < cursor.getCount(); i++){
-
-
-            result.add(temp);
+            result.add(loop(cursor, cursor.getCount()));
         }
-        return null;
+        return result;
     }
 
     private MovieAPIModel loop(Cursor cursor, int i){
