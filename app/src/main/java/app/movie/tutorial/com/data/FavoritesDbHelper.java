@@ -21,7 +21,7 @@ public class FavoritesDbHelper extends SQLiteOpenHelper{
                 FavoritesContract.FavoritesEntry.COLUMN_MOVIE_TITLE + " TEXT NOT NULL, " +
                 FavoritesContract.FavoritesEntry.COLUMN_MOVIE_POSTER_URL + " TEXT NOT NULL, " +
                 FavoritesContract.FavoritesEntry.COLUMN_MOVIE_DETAILS + " TEXT NOT NULL, " +
-                FavoritesContract.FavoritesEntry.COLUMN_MOVIE_RATING + " INTEGER NOT NULL, " +
+                FavoritesContract.FavoritesEntry.COLUMN_MOVIE_RATING + " DOUBLE NOT NULL, " +
                 FavoritesContract.FavoritesEntry.COLUMN_MOVIE_RELEASE_DATE + " TEXT NOT NULL " +
                 "); ";
 

@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,8 +21,11 @@ import java.util.List;
 import app.movie.tutorial.com.R;
 import app.movie.tutorial.com.adapter.ReviewViewAdapter;
 import app.movie.tutorial.com.adapter.TrailerViewAdapter;
+import app.movie.tutorial.com.data.DatabaseUtils;
 import app.movie.tutorial.com.data.FavoritesDbHelper;
 import app.movie.tutorial.com.model.ListOfTrailers;
+import app.movie.tutorial.com.model.MovieAPIModel;
+import app.movie.tutorial.com.model.MovieModel;
 import app.movie.tutorial.com.model.ReviewsModel;
 import app.movie.tutorial.com.model.TrailerModel;
 import app.movie.tutorial.com.rest.MovieApiService;
@@ -41,6 +46,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     public RecyclerView mTrailerView;
     private ArrayList<ReviewsModel.ReviewList> reviewsModel;
     public RecyclerView mReviewView;
+    public Button favoriteButton;
     private SQLiteDatabase mDb;
 
     @Override
@@ -55,6 +61,9 @@ public class MovieDetailActivity extends AppCompatActivity {
         TextView mMovieReleaseDate = (TextView) findViewById(R.id.MovieReleaseDateTV);
         mTrailerView = (RecyclerView) findViewById(R.id.trailerRecyclerView);
         mReviewView = (RecyclerView) findViewById(R.id.reviewRecyclerView);
+        favoriteButton = (Button) findViewById(R.id.favoriteButton);
+        final MovieAPIModel favorite = new MovieAPIModel();
+
 
         FavoritesDbHelper dbHelper = new FavoritesDbHelper(this);
         mDb = dbHelper.getWritableDatabase();
@@ -62,8 +71,12 @@ public class MovieDetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         if (intent.hasExtra("MoviePoster")){
+            String posterPath = intent.getStringExtra("MoviePoster");
+
+            favorite.setPosterPath(posterPath);
+
             String IMAGE_URL_BASE_PATH="http://image.tmdb.org/t/p/w500//";
-            String image_url = IMAGE_URL_BASE_PATH + intent.getStringExtra("MoviePoster");
+            String image_url = IMAGE_URL_BASE_PATH + posterPath;
             Picasso.get()
                     .load(image_url)
                     .placeholder(android.R.drawable.sym_def_app_icon)
@@ -72,22 +85,38 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
 
         if (intent.hasExtra("MovieTitle")){
-            mTitle.setText(intent.getStringExtra("MovieTitle"));
+            String movieTitle = intent.getStringExtra("MovieTitle");
+            mTitle.setText(movieTitle);
+            favorite.setTitle(movieTitle);
         }
         if (intent.hasExtra("MovieReleaseDate")){
-            mMovieReleaseDate.setText(intent.getStringExtra("MovieReleaseDate"));
+            String releaseDate = intent.getStringExtra("MovieReleaseDate");
+            mMovieReleaseDate.setText(releaseDate);
+            favorite.setReleaseDate(releaseDate);
         }
         if (intent.hasExtra("MovieDetails")){
-            mMovieDesc.setText(intent.getStringExtra("MovieDetails"));
+            String movieDets = intent.getStringExtra("MovieDetails");
+            mMovieDesc.setText(movieDets);
+            favorite.setOverview(movieDets);
         }
         if (intent.hasExtra("MovieRating")){
-            mMovieRating.setText(intent.getStringExtra("MovieRating"));
+            String rating = intent.getStringExtra("MovieRating");
+            mMovieRating.setText(rating);
+            favorite.setVoteAverage(Double.parseDouble(rating));
         }
         if (intent.hasExtra("MovieId")){
             int movieId = intent.getIntExtra("MovieId", 0);
             getTrailer(movieId);
             getReviews(movieId);
+            favorite.setId(movieId);
         }
+
+        favoriteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatabaseUtils.insertMovie(mDb, favorite);
+            }
+        });
     }
 
     // Makes the Asnyc call and creates/sets recyclerview and adapter

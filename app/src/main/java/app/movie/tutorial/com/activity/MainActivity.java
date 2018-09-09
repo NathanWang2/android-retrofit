@@ -124,10 +124,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                 SortMethod = 3;
                 FavoritesDbHelper dbHelper = new FavoritesDbHelper(this);
                 mDb = dbHelper.getReadableDatabase();
+//                Can only have 1 db instance
+//                TODO move all calls into main. It should be easier to get all the calls working
 
                 Cursor cursor = mDb.rawQuery("select DISTINCT tbl_name from sqlite_master where tbl_name = '"+ FavoritesContract.FavoritesEntry.TABLE_NAME+"'", null);
                 if(cursor!=null) {
-                    if (cursor.getCount() > 0) {
+                    if (cursor.getCount() > 1) {
                         cursor.close();
                         Log.d("FAVORITES", "We are in the favorites");
                         Cursor test = getAllMovies();

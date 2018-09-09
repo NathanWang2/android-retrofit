@@ -6,4 +6,5 @@
     <string name="dropdown_3">Favorites</string>
     <string name="trailers">Trailers</string>
     <string name="reviews">Reviews</string>
+    <string name="favorites">Favorite</string>
 </resources>
