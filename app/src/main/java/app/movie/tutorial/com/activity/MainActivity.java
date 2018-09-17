@@ -55,7 +55,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     public int SortMethod = 1;
     public ArrayList<MovieAPIModel> movies;
     public final AutoFitGridLayoutManager layoutManager = new AutoFitGridLayoutManager(MainActivity.this, 300);
-    private SQLiteDatabase mDb;
+    public SQLiteDatabase mDb;
+    public static FavoritesDbHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         setContentView(R.layout.activity_main);
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        dbHelper = new FavoritesDbHelper(this);
 
 
         connectAndGetApiData(SortMethod, CurrentPage);
@@ -122,10 +124,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
             case R.id.action_dropdown_3:
                 SortMethod = 3;
-                FavoritesDbHelper dbHelper = new FavoritesDbHelper(this);
+
                 mDb = dbHelper.getReadableDatabase();
-//                Can only have 1 db instance
-//                TODO move all calls into main. It should be easier to get all the calls working
 
                 Cursor cursor = mDb.rawQuery("select DISTINCT tbl_name from sqlite_master where tbl_name = '"+ FavoritesContract.FavoritesEntry.TABLE_NAME+"'", null);
                 if(cursor!=null) {
@@ -142,7 +142,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                 }
                 cursor.close();
 //                TODO Pass over the database read
-//                TODO make utils class for iterating through cursor to make
+                mDb.close();
+                dbHelper.close();
                 return true;
 
             default:

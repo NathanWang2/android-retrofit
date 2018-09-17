@@ -1,6 +1,7 @@
 package app.movie.tutorial.com.activity;
 
 import android.content.Intent;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import app.movie.tutorial.com.R;
 import app.movie.tutorial.com.adapter.ReviewViewAdapter;
 import app.movie.tutorial.com.adapter.TrailerViewAdapter;
 import app.movie.tutorial.com.data.DatabaseUtils;
+import app.movie.tutorial.com.data.FavoritesContract;
 import app.movie.tutorial.com.data.FavoritesDbHelper;
 import app.movie.tutorial.com.model.ListOfTrailers;
 import app.movie.tutorial.com.model.MovieAPIModel;
@@ -64,9 +66,9 @@ public class MovieDetailActivity extends AppCompatActivity {
         favoriteButton = (Button) findViewById(R.id.favoriteButton);
         final MovieAPIModel favorite = new MovieAPIModel();
 
-
-        FavoritesDbHelper dbHelper = new FavoritesDbHelper(this);
+        FavoritesDbHelper dbHelper = FavoritesDbHelper.getInstance(this);
         mDb = dbHelper.getWritableDatabase();
+
 
         Intent intent = getIntent();
 
@@ -114,6 +116,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         favoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Toast.makeText(MovieDetailActivity.this, "Clicked Button", Toast.LENGTH_SHORT).show();
                 DatabaseUtils.insertMovie(mDb, favorite);
             }
         });
