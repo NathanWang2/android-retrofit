@@ -22,9 +22,8 @@ public class CursorToMovieModel {
     public ArrayList<MovieAPIModel> getListOfMovies(){
 
         ArrayList<MovieAPIModel> result = new ArrayList<MovieAPIModel>();
-//        MovieAPIModel temp = new MovieAPIModel();
         for (int i = 0; i < cursor.getCount(); i++){
-            result.add(loop(cursor, cursor.getCount()));
+            result.add(loop(cursor, i));
         }
         return result;
     }

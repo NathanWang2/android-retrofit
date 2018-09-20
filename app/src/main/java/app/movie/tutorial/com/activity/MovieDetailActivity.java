@@ -66,7 +66,8 @@ public class MovieDetailActivity extends AppCompatActivity {
         favoriteButton = (Button) findViewById(R.id.favoriteButton);
         final MovieAPIModel favorite = new MovieAPIModel();
 
-        FavoritesDbHelper dbHelper = FavoritesDbHelper.getInstance(this);
+        FavoritesDbHelper dbHelper = FavoritesDbHelper.getInstance(getApplicationContext());
+//        FavoritesDbHelper dbHelper = new FavoritesDbHelper(this);
         mDb = dbHelper.getWritableDatabase();
 
 

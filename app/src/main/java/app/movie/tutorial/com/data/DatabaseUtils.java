@@ -23,7 +23,6 @@ public class DatabaseUtils {
         cv.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_RELEASE_DATE, movie.getReleaseDate());
         cv.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_TITLE, movie.getTitle());
 
-
         try
         {
             db.beginTransaction();
