@@ -1,11 +1,17 @@
 package app.movie.tutorial.com.data;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.Toast;
 
 import app.movie.tutorial.com.activity.MainActivity;
 import app.movie.tutorial.com.model.MovieAPIModel;
+import retrofit2.http.Query;
+
+import static app.movie.tutorial.com.data.FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID;
+import static app.movie.tutorial.com.data.FavoritesContract.FavoritesEntry.TABLE_NAME;
 
 public class DatabaseUtils {
 
@@ -27,7 +33,7 @@ public class DatabaseUtils {
         {
             db.beginTransaction();
 
-            db.insert(FavoritesContract.FavoritesEntry.TABLE_NAME, null, cv);
+            db.insert(TABLE_NAME, null, cv);
             db.setTransactionSuccessful();
         }
         catch (SQLException e) {
@@ -37,5 +43,24 @@ public class DatabaseUtils {
         {
             db.endTransaction();
         }
+    }
+
+    public static boolean checkMovieExist(SQLiteDatabase mdb, int movieId){
+        boolean result = true;
+        Cursor cursor = mdb.query(
+                TABLE_NAME,
+                new String[] {COLUMN_MOVIE_ID},
+                new String (COLUMN_MOVIE_ID + "=?"),
+                new String[]{String.valueOf(movieId)},
+                null,
+                null,
+                null,
+                null);
+
+        if (cursor.getCount() >= 0){
+            result = false;
+        }
+        cursor.close();
+        return result;
     }
 }

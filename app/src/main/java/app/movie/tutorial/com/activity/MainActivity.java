@@ -39,7 +39,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * To find where the original project came from.
  *
  * Created by Gino Osahon on 14/03/2017.
- * Edited by Nathan Wang 6/4/2018.
+ * Edited by Nathan Wang 9/21/2018.
  */
 
 
@@ -130,7 +130,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                 if (test != null) {
                     CursorToMovieModel listOfMovies = new CursorToMovieModel(test);
                     addScreenItem(listOfMovies.getListOfMovies());
-                    Toast.makeText(this, "THIS TABLE HAS CONTENT", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "There are no favorited movies", Toast.LENGTH_SHORT).show();
                 }
                 test.close();
                 mDb.close();
@@ -197,16 +198,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     }
 
     private Cursor getAllMovies(){
-//        return mDb.query(
-//                FavoritesContract.FavoritesEntry.TABLE_NAME,
-//                null,
-//                null,
-//                null,
-//                null,
-//                null,
-//                null
-//        );
-        return null;
+        return mDb.query(
+                FavoritesContract.FavoritesEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
     }
 
 

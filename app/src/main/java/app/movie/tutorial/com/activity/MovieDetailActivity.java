@@ -1,7 +1,6 @@
 package app.movie.tutorial.com.activity;
 
 import android.content.Intent;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,7 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -23,11 +21,9 @@ import app.movie.tutorial.com.R;
 import app.movie.tutorial.com.adapter.ReviewViewAdapter;
 import app.movie.tutorial.com.adapter.TrailerViewAdapter;
 import app.movie.tutorial.com.data.DatabaseUtils;
-import app.movie.tutorial.com.data.FavoritesContract;
 import app.movie.tutorial.com.data.FavoritesDbHelper;
 import app.movie.tutorial.com.model.ListOfTrailers;
 import app.movie.tutorial.com.model.MovieAPIModel;
-import app.movie.tutorial.com.model.MovieModel;
 import app.movie.tutorial.com.model.ReviewsModel;
 import app.movie.tutorial.com.model.TrailerModel;
 import app.movie.tutorial.com.rest.MovieApiService;
@@ -67,7 +63,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         final MovieAPIModel favorite = new MovieAPIModel();
 
         FavoritesDbHelper dbHelper = FavoritesDbHelper.getInstance(getApplicationContext());
-//        FavoritesDbHelper dbHelper = new FavoritesDbHelper(this);
         mDb = dbHelper.getWritableDatabase();
 
 
@@ -115,10 +110,15 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
 
         favoriteButton.setOnClickListener(new View.OnClickListener() {
+//            TODO Add check if movie exists. If exists make it unfavorite
             @Override
             public void onClick(View view) {
-                Toast.makeText(MovieDetailActivity.this, "Clicked Button", Toast.LENGTH_SHORT).show();
-                DatabaseUtils.insertMovie(mDb, favorite);
+                if (DatabaseUtils.checkMovieExist(mDb, favorite.getId())){
+//                    TODO add a way to remove favorite
+
+                } else {
+                    DatabaseUtils.insertMovie(mDb, favorite);
+                }
             }
         });
     }
@@ -141,7 +141,6 @@ public class MovieDetailActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<TrailerModel> call, Response<TrailerModel> response) {
                 listOfTrailers = response.body().getResults();
-                Toast.makeText(MovieDetailActivity.this, "This Passed", Toast.LENGTH_SHORT).show();
 
                 TrailerViewAdapter adapter = new TrailerViewAdapter(MovieDetailActivity.this, listOfTrailers);
                 mTrailerView.setAdapter(adapter);
@@ -155,8 +154,6 @@ public class MovieDetailActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<TrailerModel> call, Throwable throwable) {
                 Log.e("FAILURE API CALL", throwable.toString());
-                String failureText = "This call has failed!";
-                Toast.makeText(MovieDetailActivity.this, failureText, Toast.LENGTH_SHORT).show();
             }
         });
     }
