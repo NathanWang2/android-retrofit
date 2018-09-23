@@ -114,7 +114,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (DatabaseUtils.checkMovieExist(mDb, favorite.getId())){
-//                    TODO add a way to remove favorite
+                    DatabaseUtils.deleteMovie(mDb, favorite);
 
                 } else {
                     DatabaseUtils.insertMovie(mDb, favorite);

@@ -57,10 +57,17 @@ public class DatabaseUtils {
                 null,
                 null);
 
-        if (cursor.getCount() >= 0){
+        if (cursor.getCount() > 0){
             result = false;
         }
         cursor.close();
         return result;
+    }
+
+    public static void deleteMovie(SQLiteDatabase mDb, MovieAPIModel favorite) {
+        mDb.delete(
+                TABLE_NAME,
+                COLUMN_MOVIE_ID + "=" + favorite.getId(),
+                null);
     }
 }
