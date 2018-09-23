@@ -57,7 +57,7 @@ public class DatabaseUtils {
                 null,
                 null);
 
-        if (cursor.getCount() > 0){
+        if (cursor.getCount() <= 0){
             result = false;
         }
         cursor.close();

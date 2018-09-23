@@ -115,7 +115,6 @@ public class MovieDetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (DatabaseUtils.checkMovieExist(mDb, favorite.getId())){
                     DatabaseUtils.deleteMovie(mDb, favorite);
-
                 } else {
                     DatabaseUtils.insertMovie(mDb, favorite);
                 }
