@@ -116,14 +116,15 @@ public class MovieDetailActivity extends AppCompatActivity {
         favoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID, favorite.getId());
+//                ContentValues contentValues = new ContentValues();
+//                contentValues.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID, favorite.getId());
 //                if (DatabaseUtils.checkMovieExist(mDb, favorite.getId())){
                 Log.d("URI", getContentResolver().query(FavoritesContract.FavoritesEntry.CONTENT_URI,
                         null,
-                        FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID + "=?",
+                        FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID,
                         new String[]{String.valueOf(favorite.getId())},
                         null).toString());
+
                 if (getContentResolver().query(FavoritesContract.FavoritesEntry.CONTENT_URI,
                         null,
                         FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID,
