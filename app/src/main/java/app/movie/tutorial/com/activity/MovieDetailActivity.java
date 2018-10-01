@@ -1,7 +1,9 @@
 package app.movie.tutorial.com.activity;
 
 import android.content.Intent;
+import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,7 +22,9 @@ import java.util.List;
 import app.movie.tutorial.com.R;
 import app.movie.tutorial.com.adapter.ReviewViewAdapter;
 import app.movie.tutorial.com.adapter.TrailerViewAdapter;
+import app.movie.tutorial.com.data.ContentProvider;
 import app.movie.tutorial.com.data.DatabaseUtils;
+import app.movie.tutorial.com.data.FavoritesContract;
 import app.movie.tutorial.com.data.FavoritesDbHelper;
 import app.movie.tutorial.com.model.ListOfTrailers;
 import app.movie.tutorial.com.model.MovieAPIModel;
@@ -110,10 +114,21 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
 
         favoriteButton.setOnClickListener(new View.OnClickListener() {
-//            TODO Add check if movie exists. If exists make it unfavorite
             @Override
             public void onClick(View view) {
-                if (DatabaseUtils.checkMovieExist(mDb, favorite.getId())){
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID, favorite.getId());
+//                if (DatabaseUtils.checkMovieExist(mDb, favorite.getId())){
+                Log.d("URI", getContentResolver().query(FavoritesContract.FavoritesEntry.CONTENT_URI,
+                        null,
+                        FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID + "=?",
+                        new String[]{String.valueOf(favorite.getId())},
+                        null).toString());
+                if (getContentResolver().query(FavoritesContract.FavoritesEntry.CONTENT_URI,
+                        null,
+                        FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID,
+                        new String[]{String.valueOf(favorite.getId())},
+                        null) != null){
                     DatabaseUtils.deleteMovie(mDb, favorite);
                 } else {
                     DatabaseUtils.insertMovie(mDb, favorite);
