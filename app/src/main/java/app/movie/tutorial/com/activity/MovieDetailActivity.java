@@ -2,6 +2,7 @@ package app.movie.tutorial.com.activity;
 
 import android.content.Intent;
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
@@ -68,6 +69,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         FavoritesDbHelper dbHelper = FavoritesDbHelper.getInstance(getApplicationContext());
         mDb = dbHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
 
 
         Intent intent = getIntent();
@@ -76,6 +78,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             String posterPath = intent.getStringExtra("MoviePoster");
 
             favorite.setPosterPath(posterPath);
+            contentValues.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_POSTER_URL, posterPath);
 
             String IMAGE_URL_BASE_PATH="http://image.tmdb.org/t/p/w500//";
             String image_url = IMAGE_URL_BASE_PATH + posterPath;
@@ -116,20 +119,16 @@ public class MovieDetailActivity extends AppCompatActivity {
         favoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                ContentValues contentValues = new ContentValues();
-//                contentValues.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID, favorite.getId());
-//                if (DatabaseUtils.checkMovieExist(mDb, favorite.getId())){
-                Log.d("URI", getContentResolver().query(FavoritesContract.FavoritesEntry.CONTENT_URI,
-                        null,
-                        FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID,
-                        new String[]{String.valueOf(favorite.getId())},
-                        null).toString());
+                Log.d("URI", getContentResolver().query(FavoritesContract.FavoritesEntry.CONTENT_URI, new String[]{FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID},
+                        FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID+"=?", new String[]{String.valueOf(favorite.getId())}, null).toString());
 
-                if (getContentResolver().query(FavoritesContract.FavoritesEntry.CONTENT_URI,
-                        null,
-                        FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID,
+                Cursor cursor = getContentResolver().query(
+                        FavoritesContract.FavoritesEntry.CONTENT_URI,
+                        new String[]{FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID},
+                        FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID+"=?",
                         new String[]{String.valueOf(favorite.getId())},
-                        null) != null){
+                        null) ;
+                if (cursor.getCount() >= 1){
                     DatabaseUtils.deleteMovie(mDb, favorite);
                 } else {
                     DatabaseUtils.insertMovie(mDb, favorite);
