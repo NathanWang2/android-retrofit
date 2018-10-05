@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.widget.Toast;
 
 import static app.movie.tutorial.com.data.FavoritesContract.FavoritesEntry.TABLE_NAME;
 
@@ -123,6 +124,7 @@ public class ContentProvider extends android.content.ContentProvider{
         if (favoritesDeleted != 0) {
             // A task was deleted, set notification
             getContext().getContentResolver().notifyChange(uri, null);
+            Toast.makeText(getContext(), "Movie was removed from favorites", Toast.LENGTH_SHORT).show();
         }
 
         // Return the number of tasks deleted

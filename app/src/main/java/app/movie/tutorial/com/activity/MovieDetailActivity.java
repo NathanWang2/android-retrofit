@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -66,10 +68,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         mReviewView = (RecyclerView) findViewById(R.id.reviewRecyclerView);
         favoriteButton = (Button) findViewById(R.id.favoriteButton);
         final MovieAPIModel favorite = new MovieAPIModel();
-
-        FavoritesDbHelper dbHelper = FavoritesDbHelper.getInstance(getApplicationContext());
-        mDb = dbHelper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
+        final ContentValues contentValues = new ContentValues();
 
 
         Intent intent = getIntent();
@@ -77,7 +76,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         if (intent.hasExtra("MoviePoster")){
             String posterPath = intent.getStringExtra("MoviePoster");
 
-            favorite.setPosterPath(posterPath);
             contentValues.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_POSTER_URL, posterPath);
 
             String IMAGE_URL_BASE_PATH="http://image.tmdb.org/t/p/w500//";
@@ -92,46 +90,62 @@ public class MovieDetailActivity extends AppCompatActivity {
         if (intent.hasExtra("MovieTitle")){
             String movieTitle = intent.getStringExtra("MovieTitle");
             mTitle.setText(movieTitle);
-            favorite.setTitle(movieTitle);
+            contentValues.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_TITLE, movieTitle);
         }
         if (intent.hasExtra("MovieReleaseDate")){
             String releaseDate = intent.getStringExtra("MovieReleaseDate");
             mMovieReleaseDate.setText(releaseDate);
-            favorite.setReleaseDate(releaseDate);
+            contentValues.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_RELEASE_DATE, releaseDate);
         }
         if (intent.hasExtra("MovieDetails")){
             String movieDets = intent.getStringExtra("MovieDetails");
             mMovieDesc.setText(movieDets);
-            favorite.setOverview(movieDets);
+            contentValues.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_DETAILS, movieDets);
         }
         if (intent.hasExtra("MovieRating")){
             String rating = intent.getStringExtra("MovieRating");
             mMovieRating.setText(rating);
-            favorite.setVoteAverage(Double.parseDouble(rating));
+            contentValues.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_RATING, Double.parseDouble(rating));
         }
         if (intent.hasExtra("MovieId")){
             int movieId = intent.getIntExtra("MovieId", 0);
             getTrailer(movieId);
             getReviews(movieId);
-            favorite.setId(movieId);
+            contentValues.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID, movieId);
         }
 
         favoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("URI", getContentResolver().query(FavoritesContract.FavoritesEntry.CONTENT_URI, new String[]{FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID},
-                        FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID+"=?", new String[]{String.valueOf(favorite.getId())}, null).toString());
+                Log.d("URI", String.valueOf(getContentResolver().query(FavoritesContract.FavoritesEntry.CONTENT_URI, new String[]{FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID},
+                        FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID+"=?", new String[]{String.valueOf(favorite.getId())}, null).getCount()));
+
 
                 Cursor cursor = getContentResolver().query(
                         FavoritesContract.FavoritesEntry.CONTENT_URI,
                         new String[]{FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID},
                         FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID+"=?",
-                        new String[]{String.valueOf(favorite.getId())},
+                        new String[]{String.valueOf(contentValues.getAsInteger("MovieId"))},
                         null) ;
-                if (cursor.getCount() >= 1){
-                    DatabaseUtils.deleteMovie(mDb, favorite);
+
+                if (cursor.moveToFirst()){
+                    int movieId = contentValues.getAsInteger("MovieId");
+                    String stringId = String.valueOf(movieId);
+//                    Uri uri = FavoritesContract.FavoritesEntry.CONTENT_URI;
+//                    uri = uri.buildUpon().appendPath(stringId).build();
+//                    getContentResolver().delete(FavoritesContract.FavoritesEntry.CONTENT_URI, "MovieId", new String[] {contentValues.getAsString("MovieId")});
+                    int delete = getContentResolver().delete(FavoritesContract.FavoritesEntry.CONTENT_URI, FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID, new String[] {stringId});
+//                    if (delete != null){
+//                        Toast.makeText(MovieDetailActivity.this, "Deleted from Favorites", Toast.LENGTH_SHORT).show();
+//                    }
+
+
+//                    DatabaseUtils.deleteMovie(mDb, favorite);
                 } else {
-                    DatabaseUtils.insertMovie(mDb, favorite);
+                    Uri uri = getContentResolver().insert(FavoritesContract.FavoritesEntry.CONTENT_URI, contentValues);
+                    if(uri != null) {
+                        Toast.makeText(getBaseContext(), "Movie was added to favorites!", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         });
