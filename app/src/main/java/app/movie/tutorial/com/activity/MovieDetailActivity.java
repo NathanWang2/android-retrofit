@@ -131,10 +131,10 @@ public class MovieDetailActivity extends AppCompatActivity {
                 if (cursor.moveToFirst()){
                     int movieId = contentValues.getAsInteger("MovieId");
                     String stringId = String.valueOf(movieId);
-//                    Uri uri = FavoritesContract.FavoritesEntry.CONTENT_URI;
-//                    uri = uri.buildUpon().appendPath(stringId).build();
-//                    getContentResolver().delete(FavoritesContract.FavoritesEntry.CONTENT_URI, "MovieId", new String[] {contentValues.getAsString("MovieId")});
-                    int delete = getContentResolver().delete(FavoritesContract.FavoritesEntry.CONTENT_URI, FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID, new String[] {stringId});
+                    Uri uri = FavoritesContract.FavoritesEntry.CONTENT_URI;
+                    uri = uri.buildUpon().appendPath(stringId).build();
+                    getContentResolver().delete(uri, null, null);
+//                    getContentResolver().delete(FavoritesContract.FavoritesEntry.CONTENT_URI, FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID, new String[] {stringId});
 //                    if (delete != null){
 //                        Toast.makeText(MovieDetailActivity.this, "Deleted from Favorites", Toast.LENGTH_SHORT).show();
 //                    }

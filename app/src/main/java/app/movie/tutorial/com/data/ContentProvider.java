@@ -17,11 +17,12 @@ public class ContentProvider extends android.content.ContentProvider{
     private FavoritesDbHelper mFavoritesDbHelper;
 
     public static final int FAVORITES = 100;
-    public static final int FAVORITE=101;
+    public static final int FAVORITE = 101;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     public static UriMatcher buildUriMatcher() {
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(FavoritesContract.AUTHORITY, FavoritesContract.PATH_FAVORITES, FAVORITES);
+        uriMatcher.addURI(FavoritesContract.AUTHORITY, FavoritesContract.PATH_FAVORITES + "/#", FAVORITE);
 //        If I had more calls
         return uriMatcher;
     }
@@ -112,7 +113,7 @@ public class ContentProvider extends android.content.ContentProvider{
 
         switch (match) {
             // Handle the single item case, recognized by the ID included in the URI path
-            case FAVORITES:
+            case FAVORITE:
                 // Get the task ID from the URI path
                 String id = uri.getPathSegments().get(1);
                 // Use selections/selectionArgs to filter for this ID
