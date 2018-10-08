@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
+import static app.movie.tutorial.com.data.FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID;
 import static app.movie.tutorial.com.data.FavoritesContract.FavoritesEntry.TABLE_NAME;
 
 public class ContentProvider extends android.content.ContentProvider{
@@ -117,7 +118,7 @@ public class ContentProvider extends android.content.ContentProvider{
                 // Get the task ID from the URI path
                 String id = uri.getPathSegments().get(1);
                 // Use selections/selectionArgs to filter for this ID
-                favoritesDeleted = db.delete(TABLE_NAME, "_id=?", new String[]{id});
+                favoritesDeleted = db.delete(TABLE_NAME, COLUMN_MOVIE_ID + "=?", new String[]{id});
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
