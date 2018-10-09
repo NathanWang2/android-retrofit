@@ -26,7 +26,6 @@ import app.movie.tutorial.com.R;
 import app.movie.tutorial.com.adapter.ReviewViewAdapter;
 import app.movie.tutorial.com.adapter.TrailerViewAdapter;
 import app.movie.tutorial.com.data.ContentProvider;
-import app.movie.tutorial.com.data.DatabaseUtils;
 import app.movie.tutorial.com.data.FavoritesContract;
 import app.movie.tutorial.com.data.FavoritesDbHelper;
 import app.movie.tutorial.com.model.ListOfTrailers;
