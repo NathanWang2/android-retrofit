@@ -3,6 +3,8 @@ package app.movie.tutorial.com.activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -106,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         return true;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -126,7 +129,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                 mDb = dbHelper.getReadableDatabase();
 
                 Log.d("FAVORITES", "We are in the favorites");
-                Cursor test = getAllMovies();
+//                Cursor test = getAllMovies();
+                Cursor test = getContentResolver().query(
+                        FavoritesContract.FavoritesEntry.CONTENT_URI,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null);
+
                 if (test != null) {
                     CursorToMovieModel listOfMovies = new CursorToMovieModel(test);
                     addScreenItem(listOfMovies.getListOfMovies());
@@ -195,18 +206,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     public void addScreenItem(ArrayList<MovieAPIModel> listMovies){
         recyclerView.setAdapter(new RecyclerViewAdapter(getApplicationContext(), listMovies, MainActivity.this));
         recyclerView.setLayoutManager(layoutManager);
-    }
-
-    private Cursor getAllMovies(){
-        return mDb.query(
-                FavoritesContract.FavoritesEntry.TABLE_NAME,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
-        );
     }
 
 
