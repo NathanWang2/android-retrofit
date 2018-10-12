@@ -34,7 +34,6 @@ public interface MovieApiService {
     Call<ReviewsModel> getReviews(
         @Path(value = "movieId", encoded = true) int id,
         @Query("api_key") String apiKey
-//        TODO Add page query
     );
 
 }

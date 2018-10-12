@@ -5,6 +5,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -46,9 +49,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 
-public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.ItemListener{
+public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.ItemListener, LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final String TAG = MainActivity.class.getSimpleName();
+//    For a loader
+    public static final String LOADER_TAG = MainActivity.class.getSimpleName();
+    private static final int LOADER_ID = 1;
+
     public static final String BASE_URL = "http://api.themoviedb.org/3/";
     public final static String API_KEY = Key.API_KEY;
     private static Retrofit retrofit = null;
@@ -60,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     public SQLiteDatabase mDb;
     public static FavoritesDbHelper dbHelper;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,8 +77,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         connectAndGetApiData(SortMethod, CurrentPage);
-
-
+        getSupportLoaderManager().initLoader(LOADER_ID, null, this);
 
 //        Load more
         final int[] pastVisibleItems = new int[1];
@@ -219,5 +227,45 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         intent.putExtra("MovieReleaseDate", item.getReleaseDate());
         intent.putExtra("MovieId", item.getId());
         startActivity(intent);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
+        CursorLoader loader = new CursorLoader(
+                this,
+                FavoritesContract.FavoritesEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null
+        );
+        return loader;
+    }
+
+//    This is where you set UI based on query
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        if (cursor != null && cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            int idIndex =
+                    cursor.getColumnIndex(LentItems._ID);
+            int nameIndex =
+                    cursor.getColumnIndex(LentItems.NAME);
+            int borrowerIndex =
+                    cursor.getColumnIndex(LentItems.BORROWER);
+            this.itemId = cursor.getLong(idIndex);
+            String name = cursor.getString(nameIndex);
+            String borrower = cursor.getString(borrowerIndex);
+            ((EditText)findViewById(R.id.name)).
+                    setText(name);
+            ((EditText)findViewById(R.id.person)).
+                    setText(borrower);
+        }
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 }

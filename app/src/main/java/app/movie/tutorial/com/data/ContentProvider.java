@@ -34,8 +34,6 @@ public class ContentProvider extends android.content.ContentProvider{
     public boolean onCreate() {
         Context context = getContext();
         mFavoritesDbHelper = new FavoritesDbHelper(context);
-//        If the line below fails use the line above
-//        mFavoritesDbHelper = FavoritesDbHelper.getInstance(context);
         return true;
     }
 
